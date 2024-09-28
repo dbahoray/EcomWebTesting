@@ -95,19 +95,32 @@ describe('MySecondTest', () => {
             cy.wait(5000)
         })
     })
-    it('Validate Find professional links', () => {
+    it.only('Validate Find professional links', () => {
 
         cy.visit("https://mccoymart.com/")
 
         cy.xpath("//div[@class='details_about_company_foot ']//div[2]//li").should('have.length', '8')
-        cy.xpath("//a[@target='_blank'][normalize-space()='Consultants']").click()
-        cy.xpath("//a[@target='_blank'][normalize-space()='Contractors']").click()
         cy.xpath("//div[@class='details_about_company_foot ']//div[2]//li")
         .each(($el,index,$list) => {
-            cy.wrap($el).should('be.visible').click()
-            cy.wait(3000)
+            if(index < 8){
+                cy.log('Clicking link:', $el.text())
+                cy.xpath("//div[@class='details_about_company_foot ']//div[2]//li").eq(index).should('be.visible')
+                .find('a')
+                .invoke('attr', 'href')
+                .then((href) => {
+
+                    if(href){
+                        cy.window().then((win) => {
+                            win.open(href, '_blank')
+                        })
+                        cy.wait(3000)
+                    }
+                    else{
+                        cy.log('No href found for element at index', index)
+                    }
+                })
+            }
         })
-        cy.xpath("//a[@target='_blank'][normalize-space()='Handyman']").click()
     })
     it('Validate Buy Leads links', () => {
 

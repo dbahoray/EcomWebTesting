@@ -95,7 +95,7 @@ describe('MySecondTest', () => {
             cy.wait(5000)
         })
     })
-    it.only('Validate Find professional links', () => {
+    it('Validate Find professional links', () => {
 
         cy.visit("https://mccoymart.com/")
 
@@ -224,6 +224,33 @@ describe('MySecondTest', () => {
 
                                   //BDD Style
                                   expect(aname2).to.equal(ename2)
+        })
+    })
+    it.only('Validate Brands', () => {
+
+        cy.visit("https://mccoymart.com/")
+        cy.get(".border-0.viewallbtnslide").click()
+
+        cy.url().should('include', 'https://mccoymart.com/buy/brands/')
+
+        cy.xpath("//div[@id='search_brand_list']//div").each(($el,index,$list) => {
+
+            if(index < 50){
+                cy.log('Clicking link:',$el.text())
+                cy.xpath("//div[@id='search_brand_list']//div").eq(index).should('be.visible')
+                .find('a')
+                .invoke('attr','href')
+                .then((href) =>{
+                    if(href){
+                        cy.visit(href, { failOnStatusCode: false})
+                        cy.go('back')
+                        cy.wait(2000)
+                    }
+                    else{
+                        cy.log('No href found for element at index', index)
+                    }
+                })
+            }
         })
     })
 })

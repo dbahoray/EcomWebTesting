@@ -42,7 +42,7 @@ describe('MySecondTest', () => {
         //     return false
         // })
 
-        const mobileNumber = "9900001111112"
+        const mobileNumber = "9900001828282828"
 
        // cy.visit("https://mccoymart.com/")
         cy.get(".loginSignUpBtn").click()
@@ -61,40 +61,23 @@ describe('MySecondTest', () => {
         //     cy.get("span[class='errorMsg']").should('not.exist')
         // }
     })
-    it('Validate shop products', () => {
+    it('Validate building products page', () => {
        // cy.visit("https://mccoymart.com/")
         cy.get("a[class='home-offering-card home-shop-card d-block']").click()
         cy.url().should('eq','https://mccoymart.com/buy/')
         
-        cy.xpath("//body[1]/section[4]/div[1]/div[2]/div[1]/div[1]/ul[1]/li[1]/div[1]/div[1]/a[1]")
-        .then((b) => {
+        // cy.xpath("//body[1]/section[4]/div[1]/div[2]/div[1]/div[1]/ul[1]/li[1]/div[1]/div[1]/a[1]")
+        // .then((b) => {
 
-            let url = b.prop('href')
-            cy.visit(url)
-        })
-        cy.url().should('include', 'https://mccoymart.com/buy/mccoy-8m-upvc-casement-door-handle-with-key-mccoy-cdhk-1-white/')
+        //     let url = b.prop('href')
+        //     cy.visit(url)
+        // })
+        cy.get("img[alt='explore categories'][src='https://mccoymart.com/buy_catalog/image/catalog/category_images/cabinet-hardware.webp']")
+        .scrollIntoView({duration:2000}).click()
+        cy.url().should('include', 'https://mccoymart.com/buy/cabinet-furniture-hardware/')
         cy.wait(3000)
 
         cy.go('back')
-    })
-    it('Validate credit finance', () => {
-       // cy.visit("https://mccoymart.com/")
-        cy.get("a[class='home-offering-card home-shop-card d-block  test-irshad......']").should('be.visible').click()
-        cy.url().should('eq','https://mccoymart.com/credit-finance/')
-        cy.get("div[class='bannerBtnWrapper'] button[type='button']").click()
-        cy.get(".customSelectBtn").trigger('mouseover').click()
-        cy.get("li[value='10-50 Lacs']").should('be.visible').click()
-        cy.get("#name").type("Testing101")
-        const mnumber = "9205489292"
-        cy.get("#mobile").type(mnumber)
-        cy.get("#save").click()
-        if(mnumber.length < 10){
-            cy.get("#mobile_message").should('have.text','Please enter your mobile.')
-        }
-        cy.get("#mobile_otp").type("8118")
-        cy.get("#save_otp").click()
-        cy.xpath("//h5[normalize-space()='Thank you']").should('have.text','Thank you')
-        cy.get("a[class='formBtnOrange']").click()
     })
     it('Validate footer links', () => {
 
@@ -206,7 +189,7 @@ describe('MySecondTest', () => {
             }
         })
     })
-    it.only('Click on Bulk Orders', () =>{
+    it('Click on Bulk Orders', () =>{
         //cy.visit("https://mccoymart.com/")
         cy.get("a[class='WhatsApp btn my-btn']").click()
 
@@ -266,9 +249,32 @@ describe('MySecondTest', () => {
 
         cy.xpath("//div[@id='search_brand_list']//div").each(($el,index,$list) => {
 
-            if(index < 25){
+            if(index < 10){
                 cy.log('Clicking link:',$el.text())
                 cy.xpath("//div[@id='search_brand_list']//div").eq(index).should('be.visible')
+                .find('a')
+                .invoke('attr','href')
+                .then((href) =>{
+                    if(href){
+                        cy.visit(href, { failOnStatusCode: false})
+                        cy.go('back')
+                        cy.wait(2000)
+                    }
+                    else{
+                        cy.log('No href found for element at index', index)
+                    }
+                })
+            }
+        })
+    })
+    it('validate from building materials to interior finishes', () =>{
+
+        cy.get("a[class='home-offering-card home-shop-card d-block']").click()
+        cy.get("div[class='expCategoriesCnt'] li:nth-child(n)").each(($el,index,$list) =>{
+            
+            if(index < 12){
+                cy.log('Clicking link:',$el.text())
+                cy.get("div[class='expCategoriesCnt'] li:nth-child(n)").eq(index).should('be.visible')
                 .find('a')
                 .invoke('attr','href')
                 .then((href) =>{

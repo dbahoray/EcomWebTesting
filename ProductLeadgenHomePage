@@ -1,0 +1,99 @@
+/// <reference types="Cypress" />
+import 'cypress-file-upload'
+
+describe('validate product home page',()=>{
+    beforeEach('function', () =>{
+        cy.on('uncaught:exception', (err, runnable) => {
+
+            return false
+        })
+        cy.visit("https://mccoymart.com/product/")
+    })
+    it('validate 3 main product categories', ()=>{
+        cy.get("div[class='product-cate-level'] a:nth-child(n)").should('have.length', '3')
+        //const ele = ".product-cate-level .cate_details"
+        cy.get(".product-cate-level .cate_details").then(($elements) =>{
+            const totalEle = $elements.length
+            for(let i=0;i<totalEle;i++){
+                cy.get(".product-cate-level .cate_details").eq(i).should('be.visible').click()
+                cy.wait(2000)
+                cy.go('back')
+            }
+        })
+    })
+    it('validate DOORS, sub-categories', () =>{
+        cy.xpath("(//span[normalize-space()='Doors'])[1]").should('have.text', 'Doors')
+        cy.xpath("(//div[@class='card-list-prod'])[1]//ul//li").each(($el, index, $list) =>{
+            if(index < 15){
+                cy.log('Clicking link:',$el.text())
+                cy.xpath("(//div[@class='card-list-prod'])[1]//ul//li").eq(index).should('be.visible')
+                .find('a')
+                .invoke('attr','href')
+                .then((href) =>{
+                    if(href){
+                        cy.visit(href, { failOnStatusCode: false})
+                        cy.go('back')
+                        cy.wait(2000)
+                    }
+                    else{
+                        cy.log('No href found for element at index', index)
+                    }
+                })
+            }
+        })
+    })
+    it('validate WINDOWS, sub-categories', () =>{
+        cy.xpath("(//span[normalize-space()='Windows'])[1]").should('have.text', 'Windows')
+        cy.xpath("(//div[@class='card-list-prod'])[2]//ul//li").each(($el, index, $list) =>{
+            if(index < 14){
+                cy.log('Clicking link:',$el.text())
+                cy.xpath("(//div[@class='card-list-prod'])[2]//ul//li").eq(index).should('be.visible')
+                .find('a')
+                .invoke('attr','href')
+                .then((href) =>{
+                    if(href){
+                        cy.visit(href, { failOnStatusCode: false})
+                        cy.go('back')
+                        cy.wait(2000)
+                    }
+                    else{
+                        cy.log('No href found for element at index', index)
+                    }
+                })
+            }
+        })
+    })
+    it('validate CLADDING & FACADES, sub-categories', () =>{
+        cy.xpath("(//span[normalize-space()='Cladding & Facades'])[1]").should('have.text', 'Cladding & Facades')
+        cy.xpath("(//div[@class='card-list-prod'])[3]//ul//li").each(($el, index, $list) =>{
+            if(index < 2){
+                cy.log('Clicking link:',$el.text())
+                cy.xpath("(//div[@class='card-list-prod'])[3]//ul//li").eq(index).should('be.visible')
+                .find('a')
+                .invoke('attr','href')
+                .then((href) =>{
+                    if(href){
+                        cy.visit(href, { failOnStatusCode: false})
+                        cy.wait(2000)
+                        cy.go('back')
+                        
+                    }
+                    else{
+                        cy.log('No href found for element at index', index)
+                    }
+                })
+            }
+        })
+    })
+    it('validate 3 main categories are clickable or not', () =>{
+        cy.get(".card-list-prod .cate_details").should('have.length', '3')
+        cy.get(".card-list-prod .cate_details").then(($elements) =>{
+            const totalEle = $elements.length
+            for(let i=0;i<totalEle;i++){
+                cy.get(".card-list-prod .cate_details").eq(i).should('be.visible').click()
+                cy.wait(2000)
+                cy.go('back')
+            }
+        })
+    })
+})
